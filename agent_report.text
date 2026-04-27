@@ -1,0 +1,80 @@
+# Product research report — PT-15 (read-only)
+
+**Scope:** Growth / product quality discovery on repository + checked-out branch (`main` at time of research).  
+**Ticket context:** Title *Kick off v3*; owner focus *B* (insufficient to narrow scope; assessment is **general** with a clear split between the **meta-experiment** and the **Tokenfence** direction on branch `PT-1`).
+
+---
+
+## 1. What the product is (as evidenced by the repo)
+
+### 1.1 On `main` (current checkout)
+
+- **Visible surfaces:** `README.md` and `direction.md` only. There is **no** `/project`, `/agents`, `/logs`, or `/docs` tree on `main` despite the README *Structure* section listing them as expected.
+- **Domain:** The repository is an **autonomous-software-company experiment** (Operon Labs: Autonomous Company #1)—AI agents are intended to own implementation; the human operator provides high-level direction only.
+- **Users:** The primary “user” of the current artifacts is the **operator / reader** of the experiment, not a paying customer of a shipped application. There is no runnable product, API, or UI in this working tree.
+- **User-visible behavior:** Reading `README.md` communicates phase (*Initialization*), rules (no manual coding, agent-driven execution), and disclaimers (not production-ready, expect breakage). `direction.md` constrains a future **for-profit, digital-only, non-trivial** software business with legal/ethical guardrails.
+
+### 1.2 Product direction not on `main` but present in git history (branch `PT-1`)
+
+- **`project/BUSINESS.md`** (only on `PT-1`, not in `main`’s tree) names the product **Tokenfence** and positions it as **B2B governance for LLM/AI API usage**: org budgets, quotas, policy (allowlists, max tokens, PII-safe routing where applicable), audit, alerts; integration via **managed proxy or SDK**; monetization as **SaaS** with enterprise upsell.
+- **`PT-1`’s `README.md`** (differs from `main`) points to that file and says phase is *Initialization (business direction chosen)*.
+
+**Implication for “what the product does”:** The **stated** customer-facing product is **Tokenfence** (governance / FinOps for LLM spend)—but **only** if you read `PT-1`. On **`main` alone, that product is not documented** in-repo.
+
+---
+
+## 2. Gaps (value, usability, trust, completeness)
+
+### 2.1 Repository / operator experience
+
+- **Drift between branches:** `main` and `PT-1` disagree on “Current Status” and whether a named product exists. Anyone cloning `main` does not see `project/BUSINESS.md`. This is a **readiness and onboarding** gap for contributors and for PM/leadership reviews.
+- **Documented structure vs. actual tree:** README promises `project/`, `agents/`, `logs/`, `docs/`; **none** exist on `main`. That reads as an **incomplete** experiment setup and undermines **trust** that the repo is the system of record.
+- **“Kick off v3” with no v3 definition on `main`:** There is no file on `main` that defines what “v3” is (stack, scope, or migration from prior ideas). **Ticket alignment is unclear** from code alone.
+- **License / compliance signals:** README says *License: TBD*. For a B2B governance product narrative (even in planning), that is a **trust** gap for any external reader.
+- **No automation signals:** No CI config, no issue templates, no `CONTRIBUTING`—acceptable for a greenfield, but a **“bugs in waiting”** class risk is **unenforced invariants** (e.g. nothing verifies that `direction.md` constraints stay reflected in new docs).
+
+### 2.2 Tokenfence (from `PT-1` only) — product-quality angles
+
+*These are **planning-level** observations; there is no implementation to validate against.*
+
+- **Completeness of MVP:** `BUSINESS.md` lists *open choices* (cloud/stack, free tier, first integration targets). A customer cannot adopt anything until these are **decided and reflected** in a concrete backlog—gap vs. **usability of the roadmap** for internal and external alignment.
+- **Trust / legal:** The doc already notes not to market **legal compliance** in regulated industries without review—good **in-code (markdown) signal**; the gap is **no** follow-through structure (e.g. review checklist, “not legal advice” pattern in future UI copy) since product does not exist yet.
+- **Onboarding (future):** B2B buyers will expect **SSO, audit, data residency**—mentioned as upsell, not as **first-mile** clarity (where logs live, retention)—still open by design; risk of **overpromising in positioning** if execution lags.
+- **Obvious pre-code risks:** Proxy/SDK split is core; without architecture, a common failure mode is **double-counting or bypass** (users calling providers directly). The doc does not record **threat model** or **enforcement** story yet—that is a **gap-in-waiting** for a governance product.
+
+### 2.3 What remains unclear (no fabrication)
+
+- Whether **v3** is meant to **supersede** Tokenfence, **continue** it, or **re-scope** the experiment is **not** stated on `main`.
+- Whether `direction.md` on `main` is still the full constraint set (git status in an earlier snapshot suggested possible churn); **authoritative constraint file** for agents should be explicit.
+
+---
+
+## 3. Code / files reviewed
+
+| Area | What was checked |
+|------|------------------|
+| `main` | `README.md`, `direction.md` |
+| Branches | `PT-1` … `PT-16` file lists (`git ls-tree`); `PT-1` has unique `project/BUSINESS.md` |
+| Other | `.gitignore` (untracked in session; includes `.bridge/` ignore), `metadata.json` under `.git/cursor/crepe/` (tool metadata only) |
+
+---
+
+## Recommended next work
+
+Exactly **three** concrete, **independently shippable** follow-ups a developer or PM could ticket without more research:
+
+1. **Reconcile `main` with the chosen product record for v3**  
+   **Action:** Add or merge the canonical product/business document on `main` (e.g. bring `project/BUSINESS.md` from `PT-1` or replace with an explicit *v3* document), and **update** `README.md` *Current Status* and links so a clone of `main` unambiguously states product name, positioning, and whether Tokenfence is still the north star.  
+   **Why:** Removes branch-level confusion and is the minimum **single source of truth** for any growth or quality work.
+
+2. **Create the promised top-level `project/` skeleton (non-code deliverable is fine)**  
+   **Action:** Add `project/README.md` (or equivalent) that states **MVP scope**, **out of scope for v3**, and resolves at least one *open choice* from the business doc (e.g. first provider integration strategy: OpenAI-first vs. OpenAI-compatible first).  
+   **Why:** Turns “Initialization” into an **actionable** slice for the next build phase without waiting for a full stack decision on everything.
+
+3. **Add a minimal `docs/` operator runbook**  
+   **Action:** Short `docs/operating-model.md` (or similar) describing: how direction updates flow into agent tasks, how outcomes are recorded, and where **license / compliance non-advice** language will live for external readers; optionally stub `logs/` with a `README` explaining the intent.  
+   **Why:** Improves **trust, onboarding, and repeatability** for the “autonomous company” meta-product until real customer surfaces exist.
+
+---
+
+*End of report.*
