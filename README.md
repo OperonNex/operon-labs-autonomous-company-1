@@ -63,7 +63,9 @@ No direct implementation.
 
 ## Current Status
 
-**Phase:** Initialization
+**Phase:** Initialization (business direction chosen)
+
+**Product:** **Tokenfence** — B2B governance for LLM/AI API usage (budgets, quotas, policy, audit). See [`project/BUSINESS.md`](project/BUSINESS.md).
 
 The system is being set up and initial workflows are being defined.
 
